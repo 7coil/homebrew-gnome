@@ -12,7 +12,6 @@ class LibaccountsGlib < Formula
   depends_on "libtool" => :build
   depends_on "gtk-doc" => :build
   depends_on "glib"
-  depends_on "ligsignon-glib"
 
   def install
     # ENV.deparallelize  # if your formula fails when building in parallel
