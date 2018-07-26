@@ -17,6 +17,7 @@ class Tracker < Formula
   depends_on "libsoup"
   depends_on "ossp-uuid"
   depends_on "python@2"
+  depends_on "python@3"
 
   def install
     inreplace "./utils/data-generators/cc/generate",
