@@ -25,8 +25,8 @@ class Tracker < Formula
     Formula["python@2"].opt_bin/"python2"
 
     mkdir "build" do
-      system "meson", "--prefix=#{prefix}",
-      "--with-session-bus-services-dir=#{prefix}/share/dbus-1/services", "-Ddocs=false", ".."
+      system "meson", "-Dprefix=#{prefix}",
+      "-Ddbus_services=#{prefix}/share/dbus-1/services", "-Ddocs=false", ".."
       system "ninja"
       system "ninja", "install"
     end
