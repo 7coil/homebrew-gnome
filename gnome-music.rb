@@ -16,6 +16,7 @@ class GnomeMusic < Formula
   depends_on "tracker"
   depends_on "spotlightishere/gnome/pygobject3"
   depends_on "grilo"
+  depends_on "gst-python"
 
   def install
     # We're doing these both manually afterwards.
