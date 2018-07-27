@@ -10,6 +10,7 @@ class TotemPlParser < Formula
   depends_on "glib"
   depends_on "libquvi"
   depends_on "libarchive"
+  depends_on "xz" => "without-xz"
   depends_on "gmime"
   depends_on "gobject-introspection"
 
@@ -21,13 +22,21 @@ class TotemPlParser < Formula
       inreplace "build.ninja" do |s|
         s.gsub! "-Wl,--version-script,#{buildpath}/plparse/plparser-mini.map", ""
         s.gsub! "-Wl,--version-script,#{buildpath}/plparse/plparser.map", ""
+
+        # Odd issue involving loading of dyld libraries.
+        # liblzma.5.dylib, provided by xz as version 8.0.0 and higher,
+        # is loaded with the system version, 6.0.0, and libarchive requires 8.x.x+
+        # So remove system libraries from build instead.
+
+        # We're safe to do explicitly mention just /usr/lib due to no other
+        # build components using this.
+        s.gsub! "-L/usr/lib", ""
       end
 
       system "ninja"
       system "ninja", "install"
     end
   end
-
 
   test do
     system "false"
