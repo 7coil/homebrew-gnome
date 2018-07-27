@@ -3,6 +3,8 @@ class TotemPlParser < Formula
   homepage ""
   url "https://download.gnome.org/sources/totem-pl-parser/3.26/totem-pl-parser-3.26.1.tar.xz"
   sha256 "6ae2c4b8acaf052af21b8db256b6314385de031ba721a2dbdb361e90d4b4b74c"
+  revision 2
+
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
@@ -34,6 +36,23 @@ class TotemPlParser < Formula
       end
 
       system "ninja"
+
+      # @rpath won't work for typelibs.
+      # Correct the gir.
+      Dir.glob("**/*.gir") do |gir_path|
+        gir_content = File.read(gir_path).gsub(/(shared-library=".+?")/) do
+          $1.gsub(/@rpath/) {lib}
+        end
+        File.open(gir_path, "w") do |gir_file|
+          gir_file.print(gir_content)
+        end
+      end
+
+      # `ninja install` below will regenerate this with the correct library path.
+      Dir.glob("**/*.typelib") do |typelib_path|
+        rm_f(typelib_path)
+      end
+
       system "ninja", "install"
     end
   end

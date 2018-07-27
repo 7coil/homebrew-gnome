@@ -6,6 +6,8 @@ class Tracker < Formula
   homepage ""
   url "https://ftp.gnome.org/pub/GNOME/sources/tracker/2.1/tracker-2.1.0.tar.xz"
   sha256 "ac55db4368acf877a2d897e262b8ff0de7cc37eedd18918981eaab6182bd06fb"
+  revision 2
+
   depends_on "pkg-config" => :build
   depends_on "meson" => :build
   depends_on "vala" => :build
@@ -27,6 +29,14 @@ class Tracker < Formula
     mkdir "build" do
       system "meson", "-Dprefix=#{prefix}",
       "-Ddbus_services=#{prefix}/share/dbus-1/services", "-Ddocs=false", ".."
+
+      inreplace "build.ninja" do |s|
+        # These are explicitly typelib'd and must be replaced.
+        s.gsub! "@rpath/libtracker-sparql-2.0.0.dylib", "#{lib}/libtracker-sparql-2.0.0.dylib"
+        s.gsub! "@rpath/libtracker-miner-2.0.0.dylib", "#{lib}/libtracker-miner-2.0.0.dylib"
+        s.gsub! "@rpath/libtracker-control-2.0.0.dylib", "#{lib}/libtracker-control-2.0.0.dylib"
+      end
+
       system "ninja"
       system "ninja", "install"
     end

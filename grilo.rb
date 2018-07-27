@@ -6,7 +6,7 @@ class Grilo < Formula
   homepage ""
   url "https://download.gnome.org/sources/grilo/0.3/grilo-0.3.5.tar.xz"
   sha256 "49ffc8854ef25b4f038bbbcf734ea060a8dc681fdff5ec5e9a1cbaa002fc373a"
-  revision 2
+  revision 3
 
   depends_on "meson" => :build
   depends_on "ninja" => :build
@@ -32,6 +32,9 @@ class Grilo < Formula
         # We're safe to do explicitly mention just /usr/lib due to no other
         # build components using this.
         s.gsub! "-L/usr/lib", ""
+
+        # rpath just won't work for typelibs.
+        s.gsub! "@rpath", "#{prefix}/lib"
       end
 
       system "ninja"
