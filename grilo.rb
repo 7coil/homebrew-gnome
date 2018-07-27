@@ -6,20 +6,37 @@ class Grilo < Formula
   homepage ""
   url "https://download.gnome.org/sources/grilo/0.3/grilo-0.3.5.tar.xz"
   sha256 "49ffc8854ef25b4f038bbbcf734ea060a8dc681fdff5ec5e9a1cbaa002fc373a"
+  revision 2
+
+  depends_on "meson" => :build
+  depends_on "ninja" => :build
   depends_on "pkg-config" => :build
-  depends_on "glib"
   depends_on "gettext" => :build
   depends_on "intltool" => :build
-  
+  depends_on "glib"
+  depends_on "libsoup"
+  depends_on "totem-pl-parser"
+  depends_on "gtk+3"
+
   def install
-    # ENV.deparallelize  # if your formula fails when building in parallel
-    # Remove unrecognized options if warned by configure
-    system "./configure", "--disable-debug",
-                          "--disable-dependency-tracking",
-                          "--disable-silent-rules",
-                          "--prefix=#{prefix}"
-    # system "cmake", ".", *std_cmake_args
-    system "make", "install" # if this fails, try separate make/make install steps
+    mkdir "build" do
+      system "meson", "--prefix=#{prefix}", ".."
+
+      inreplace "build.ninja" do |s|
+        s.gsub! "--no-undefined", ""
+        # Odd issue involving loading of dyld libraries.
+        # liblzma.5.dylib, provided by xz as version 8.0.0 and higher,
+        # is loaded with the system version, 6.0.0, and libarchive requires 8.x.x+
+        # So remove system libraries from build instead.
+
+        # We're safe to do explicitly mention just /usr/lib due to no other
+        # build components using this.
+        s.gsub! "-L/usr/lib", ""
+      end
+
+      system "ninja"
+      system "ninja", "install"
+    end
   end
 
   test do
