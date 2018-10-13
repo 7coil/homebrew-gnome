@@ -22,13 +22,19 @@ class Gcr < Formula
   patch :DATA
 
   def install
+    # Remove X11 dependency
+    inreplace 'configure.ac' do |s|
+      s.gsub! ' gtk+-x11-3.0 >= $GTK_REQ', ""
+    end
+
+    system "autoreconf", "-fi"
+
     system "./configure", "--disable-debug",
                           "--disable-dependency-tracking",
                           "--disable-silent-rules",
                           "--prefix=#{prefix}",
                           "--disable-schemas-compile",
-                          "--disable-update-icon-cache",
-                          "--without-gtk"
+                          "--disable-update-icon-cache"
 
     # system "cmake", ".", *std_cmake_args
     system "make", "install" # if this fails, try separate make/make install steps
