@@ -1,8 +1,8 @@
 class GnomeMusic < Formula
   desc ""
   homepage ""
-  url "https://download.gnome.org/sources/gnome-music/3.29/gnome-music-3.29.2.tar.xz"
-  sha256 "29c8277e76fa37a711a8d616705fcf20830cd2fa30b97507251b9a7f151bd36c"
+  url "https://download.gnome.org/sources/gnome-music/3.31/gnome-music-3.31.1.tar.xz"
+  sha256 "5f953ea1fe2d98ab7d0e7b230fb2eefa8b4c7c1282464a02ff892cb189a0f856"
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
